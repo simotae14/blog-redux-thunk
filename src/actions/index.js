@@ -5,10 +5,11 @@ export const fetchPostsAndUsers = () => async (dispatch, getState) => {
   // call fetchPosts and dispatch to reducer
   await dispatch(fetchPosts()); // manually dispatch action creator
   
-  // retrieve just the uniq userId from the posts
-  const userIds = _.uniq(_.map(getState().posts, 'userId'));
-  
-  userIds.forEach(id => dispatch(fetchUser(id)));
+  _.chain(getState().posts)
+    .map('userId')
+    .uniq()
+    .forEach(id => dispatch(fetchUser(id)))
+    .value();
 };
 
 export const fetchPosts = () => async dispatch => {
